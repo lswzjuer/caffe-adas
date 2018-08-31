@@ -1,5 +1,4 @@
 name: "MobileNet-SSD"
-
 input: "data"
 input_shape {
   dim: 1
@@ -7,7 +6,6 @@ input_shape {
   dim: 300
   dim: 640
 }
-
 layer {
   name: "conv0"
   type: "Convolution"
@@ -203,6 +201,7 @@ layer {
   }
 }
 layer {
+
   name: "conv1/relu"
   type: "ReLU"
   bottom: "conv1"
@@ -272,6 +271,7 @@ layer {
   }
 }
 layer {
+
   name: "conv2/dw/relu"
   type: "ReLU"
   bottom: "conv2/dw"
@@ -337,6 +337,7 @@ layer {
   }
 }
 layer {
+
   name: "conv2/relu"
   type: "ReLU"
   bottom: "conv2"
@@ -470,6 +471,7 @@ layer {
   }
 }
 layer {
+
   name: "conv3/relu"
   type: "ReLU"
   bottom: "conv3"
@@ -478,6 +480,7 @@ layer {
 
 
 ##### new add layer, freeze layers before conv4_1
+
 layer {
   name: "conv4_1/dw"
   type: "Convolution"
@@ -487,7 +490,6 @@ layer {
     lr_mult: 1.0
     decay_mult: 1.0
   }
-  propagate_down: 0
   convolution_param {
     num_output: 128
     bias_term: false
@@ -630,4 +632,9 @@ layer {
     }
   }
 }
-
+#layer {
+#  name: "ctx_softmax"
+#  type: "Softmax"
+#  bottom: "conv5_1/lane_loc"
+#  top: "ctx_softmax"
+#}

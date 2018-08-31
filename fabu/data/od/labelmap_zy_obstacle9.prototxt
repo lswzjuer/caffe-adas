@@ -1,0 +1,45 @@
+item {
+  name: "none_of_the_above"
+  label: 0
+  display_name: "background"
+}
+item {
+  name: "car"
+  label: 1
+  display_name: "car"
+}
+item {
+  name: "bus"
+  label: 2
+  display_name: "bus"
+}
+item {
+  name: "truck"
+  label: 3
+  display_name: "truck"
+}
+item {
+  name: "person"
+  label: 4
+  display_name: "person"
+}
+item {
+  name: "bicycle"
+  label: 5
+  display_name: "bicycle"
+}
+item {
+  name: "motor"
+  label: 6
+  display_name: "motor"
+}
+item {
+  name: "tricycle"
+  label: 7
+  display_name: "tricycle"
+}
+item {
+  name: "block"
+  label: 8
+  display_name: "block"
+}

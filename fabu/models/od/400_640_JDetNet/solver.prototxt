@@ -1,8 +1,8 @@
 train_net: "train.prototxt"
 test_net: "test.prototxt"
-test_iter: 2000
+test_iter: 161
 test_interval: 2000
-base_lr: 1e-6
+base_lr: 1e-2
 display: 50
 max_iter: 300000
 lr_policy: "multistep"
@@ -15,7 +15,7 @@ snapshot_prefix: "snapshot/ssdJacintoNetV2"
 solver_mode: GPU
 debug_info: false
 snapshot_after_train: true
-test_initialization: false
+test_initialization: true
 average_loss: 50
 stepvalue: 60000
 stepvalue: 90000

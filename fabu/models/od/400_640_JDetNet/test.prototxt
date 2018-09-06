@@ -22,7 +22,7 @@ layer {
   }
   data_param {
     source: "/private/wangwenxiao/adas_dataset/adas_od_val_lmdb"
-    batch_size: 1
+    batch_size: 8
     backend: LMDB
   }
   annotated_data_param {
@@ -61,7 +61,7 @@ layer {
     dilation: 1
   }
 }
-ayer {
+layer {
   name: "conv1a/bn"
   type: "BatchNorm"
   bottom: "conv1a"

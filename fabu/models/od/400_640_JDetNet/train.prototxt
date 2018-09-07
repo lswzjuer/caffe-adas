@@ -1386,7 +1386,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 20
+    num_output: 24
     bias_term: true
     pad: 0
     kernel_size: 1
@@ -1437,7 +1437,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 45
+    num_output: 54
     bias_term: true
     pad: 0
     kernel_size: 1
@@ -1481,7 +1481,8 @@ layer {
   bottom: "data"
   top: "ctx_output1/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 30.0
+    min_size: 40.0
+    max_size: 80.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5
@@ -1605,8 +1606,8 @@ layer {
   bottom: "data"
   top: "ctx_output2/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 75.0
-    max_size: 130.0
+    min_size: 80.0
+    max_size: 148.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5
@@ -1730,8 +1731,8 @@ layer {
   bottom: "data"
   top: "ctx_output3/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 130.0
-    max_size: 180.0
+    min_size: 216.0
+    max_size: 284.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5
@@ -1855,8 +1856,8 @@ layer {
   bottom: "data"
   top: "ctx_output4/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 180.0
-    max_size: 240.0
+    min_size: 284.0
+    max_size: 352.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5
@@ -1980,8 +1981,8 @@ layer {
   bottom: "data"
   top: "ctx_output5/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 240.0
-    max_size: 310.0
+    min_size: 352.0
+    max_size: 420.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5

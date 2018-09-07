@@ -123,7 +123,7 @@ class laneProcess():
         
         regionImg = measure.label(predImg, connectivity=2)
 
-        labels, regionList, laneList = self.filterRegion(predImg, regionImg, 200/self._ratio, 40/self._ratio)
+        labels, regionList, laneList = self.filterRegion(predImg, regionImg, 100/self._ratio, 40/self._ratio)
         
         self._regionNum = len(np.unique(labels)) - 1  # ignore background label 0
         self._regionList = regionList

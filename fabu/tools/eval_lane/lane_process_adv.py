@@ -78,7 +78,7 @@ class laneProcess():
         return laneType
         
     
-    def filterRegion(self, predImg, regionImg, areaThreshold = 200, lengthThreshold = 80):
+    def filterRegion(self, predImg, regionImg, areaThreshold = 20, lengthThreshold = 8):
         """Remove those region whose area is lower than areaThreshold or maxLength is short than lengthThreshold.
         params:
             predImg: The NN predicted image
@@ -123,7 +123,7 @@ class laneProcess():
         
         regionImg = measure.label(predImg, connectivity=2)
 
-        labels, regionList, laneList = self.filterRegion(predImg, regionImg, 300/self._ratio, 60/self._ratio)
+        labels, regionList, laneList = self.filterRegion(predImg, regionImg, 200/self._ratio, 40/self._ratio)
         
         self._regionNum = len(np.unique(labels)) - 1  # ignore background label 0
         self._regionList = regionList

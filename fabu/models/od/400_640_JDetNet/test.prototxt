@@ -21,7 +21,7 @@ layer {
     }
   }
   data_param {
-    source: "/private/wangwenxiao/adas_dataset/adas_od_val_lmdb"
+    source: "/private/wangwenxiao/adas_dataset/class9_lmdb/adas_od_val_lmdb"
     batch_size: 8
     backend: LMDB
   }

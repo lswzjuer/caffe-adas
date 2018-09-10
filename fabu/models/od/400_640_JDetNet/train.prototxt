@@ -46,8 +46,8 @@ layer {
     }
   }
   data_param {
-    source: "/private/wangwenxiao/adas_dataset/adas_od_train_lmdb"
-    batch_size: 16
+    source: "/private/wangwenxiao/adas_dataset/class9_lmdb/adas_od_train_lmdb"
+    batch_size: 24
     backend: LMDB
   }
   annotated_data_param {

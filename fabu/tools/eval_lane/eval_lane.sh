@@ -1,2 +1,2 @@
-root_path=../../models/lane/300_640_mobilenetv1_ssd_upsample
-python eval_lane.py --deploy $root_path/deploy_deeper_weight.prototxt --model $root_path/mobile_lane_loc_iter_11000.caffemodel --image ./lane_test.txt --gpu 5 --path ./eval_res/
+root_path=/home/sunxiang/code/MobileNetV1-SSD/
+python eval_lane.py --deploy $root_path/net/lane_loc/400_640_jsegnet_no_mid_upsample/deploy_ti.prototxt --model $root_path/net/lane_loc/400_640_jsegnet_no_mid_upsample/ti_sim_iter_62000.caffemodel --image ./lane4_val_image_convert_300_640.txt --gpu 2 --path ./../eval_lane/no_mid_upsample/ctx_final/

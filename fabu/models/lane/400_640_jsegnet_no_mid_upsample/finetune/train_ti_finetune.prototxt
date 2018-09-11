@@ -10,7 +10,7 @@ layer {
         batch_size: 16
     }
     transform_param {
-        scale: 0.007843
+        #scale: 0.007843
         #mirror: true
         mean_value: 104.0
         mean_value: 117.0

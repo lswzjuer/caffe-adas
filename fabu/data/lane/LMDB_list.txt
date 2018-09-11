@@ -1,0 +1,7 @@
+## LMDB data path
+/private/sunxiang/data/LANE/LMDB/400_640/lane4_train_image_lmdb_400_640
+/private/sunxiang/data/LANE/LMDB/400_640/lane4_train_label_lmdb_100_160
+/private/sunxiang/data/LANE/LMDB/400_640/lane4_train_label_lmdb_400_640
+/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_image_lmdb_400_640
+/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_label_lmdb_100_160
+/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_label_lmdb_400_640

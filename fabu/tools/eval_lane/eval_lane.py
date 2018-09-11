@@ -66,38 +66,42 @@ class EvalLane():
         for i in range(0, len(lines)):
             line = lines[i].strip('\n')
             self.imgName = line.split('/')[-1]
-            
-            img = caffe.io.load_image(line)
-            
-            transformed_image = self.transformer.preprocess('data', img)
-            self.net.blobs['data'].data[...] = transformed_image
-            output = self.net.forward()
+           
+            try:
+                img = caffe.io.load_image(line)
+            except IOError:
+                print "Open failed: ", line
+            else: 
+                transformed_image = self.transformer.preprocess('data', img)
+                self.net.blobs['data'].data[...] = transformed_image
+                output = self.net.forward()
 
-            #score = output['conv5_1/lane_loc'][0]
-            score = self.net.blobs['ctx_final'].data[0]
-            score = self.softmax(score, axis=0)
-            score[np.where(score < 0.6)] = 0
-            classed = np.argmax(score, axis=0)
-            #print "score shape: ", score.shape
-            
-            #classed = output["argMaxOut"][0][0]
+                #score = output['conv5_1/lane_loc'][0]
+                score = self.net.blobs['ctx_final'].data[0]
+                score = self.softmax(score, axis=0)
+                score[np.where(score < 0.6)] = 0
+                classed = np.argmax(score, axis=0)
+                #print "score shape: ", score.shape
+                
+                #classed = output["argMaxOut"][0][0]
 
-            classed = classed.astype(np.int)
-            labels = [self.labels[s] for s in np.unique(classed)]
-            print "labels: ", np.unique(classed), labels
-            
-            img = img * 255
-            img = img[..., [2, 1, 0]]
-            # ratio: the ratio between input image size and output feature map size
-            laneprocess = laneProcess(self.path, ratio = 8)
-            all_ext_points = laneprocess.processLane(classed, img, self.imgName, drawFlag=True)
-            print "all_ext_points: ", all_ext_points
-            
-            #print "imageName: ", self.imgName
-            cv2.imwrite(self.path + self.imgName + "_res.png", classed*32)
-            cv2.imwrite(self.path + self.imgName + "_src.jpg", img)
+                classed = classed.astype(np.int)
+                labels = [self.labels[s] for s in np.unique(classed)]
+                print "labels: ", np.unique(classed), labels
+                
+                img = img * 255
+                img = img[..., [2, 1, 0]]
+                img = cv2.resize(img, (640, 400), interpolation=cv2.INTER_LINEAR)
+                # ratio: the ratio between input image size and output feature map size
+                laneprocess = laneProcess(self.path, ratio = 8)
+                all_ext_points = laneprocess.processLane(classed, img, self.imgName, drawFlag=True)
+                print "all_ext_points: ", all_ext_points
+                
+                #print "imageName: ", self.imgName
+                cv2.imwrite(self.path + self.imgName + "_res.png", classed*32)
+                cv2.imwrite(self.path + self.imgName + "_src.jpg", img)
 
-            #assert(i < 10)
+                #assert(i < 10)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

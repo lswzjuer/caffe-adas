@@ -11,9 +11,9 @@ layer {
     transform_param {
         #scale: 0.007843
         #mirror: true
-        mean_value: 104.0
-        mean_value: 117.0
-        mean_value: 123.0
+        mean_value: 128.0
+        mean_value: 128.0
+        mean_value: 128.0
     }
     include: { phase: TEST }
 }
@@ -36,11 +36,11 @@ layer {
   bottom: "data"
   top: "conv1a"
   param {
-    lr_mult: 1
-    decay_mult: 1
+    lr_mult: 0
+    decay_mult: 0
   }
   param {
-    lr_mult: 2
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -77,6 +77,9 @@ layer {
     lr_mult: 0
     decay_mult: 0
   }
+  batch_norm_param {
+    use_global_stats: true
+  }
 }
 layer {
   name: "conv1a/scale"
@@ -84,11 +87,11 @@ layer {
   bottom: "conv1a"
   top: "conv1a"
   param {
-    lr_mult: 0.1
+    lr_mult: 0
     decay_mult: 0.0
   }
   param {
-    lr_mult: 0.2
+    lr_mult: 0
     decay_mult: 0.0
   }
   scale_param {
@@ -113,11 +116,11 @@ layer {
   bottom: "conv1a"
   top: "conv1b"
   param {
-    lr_mult: 1
-    decay_mult: 1
+    lr_mult: 0
+    decay_mult: 0
   }
   param {
-    lr_mult: 2
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -154,6 +157,9 @@ layer {
     lr_mult: 0
     decay_mult: 0
   }
+  batch_norm_param {
+    use_global_stats: true
+  }
 }
 layer {
   name: "conv1b/scale"
@@ -161,11 +167,11 @@ layer {
   bottom: "conv1b"
   top: "conv1b"
   param {
-    lr_mult: 0.1
+    lr_mult: 0
     decay_mult: 0.0
   }
   param {
-    lr_mult: 0.2
+    lr_mult: 0
     decay_mult: 0.0
   }
   scale_param {
@@ -201,11 +207,11 @@ layer {
   bottom: "pool1"
   top: "res2a_branch2a"
   param {
-    lr_mult: 1
-    decay_mult: 1
+    lr_mult: 0
+    decay_mult: 0
   }
   param {
-    lr_mult: 2
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -242,6 +248,9 @@ layer {
     lr_mult: 0
     decay_mult: 0
   }
+  batch_norm_param {
+    use_global_stats: true
+  }
 }
 layer {
   name: "res2a_branch2a/scale"
@@ -249,11 +258,11 @@ layer {
   bottom: "res2a_branch2a"
   top: "res2a_branch2a"
   param {
-    lr_mult: 0.1
+    lr_mult: 0
     decay_mult: 0.0
   }
   param {
-    lr_mult: 0.2
+    lr_mult: 0
     decay_mult: 0.0
   }
   scale_param {
@@ -278,11 +287,11 @@ layer {
   bottom: "res2a_branch2a"
   top: "res2a_branch2b"
   param {
-    lr_mult: 1
-    decay_mult: 1
+    lr_mult: 0
+    decay_mult: 0
   }
   param {
-    lr_mult: 2
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -319,6 +328,9 @@ layer {
     lr_mult: 0
     decay_mult: 0
   }
+  batch_norm_param {
+    use_global_stats: true
+  }
 }
 layer {
   name: "res2a_branch2b/scale"
@@ -326,11 +338,11 @@ layer {
   bottom: "res2a_branch2b"
   top: "res2a_branch2b"
   param {
-    lr_mult: 0.1
+    lr_mult: 0
     decay_mult: 0.0
   }
   param {
-    lr_mult: 0.2
+    lr_mult: 0
     decay_mult: 0.0
   }
   scale_param {
@@ -366,11 +378,11 @@ layer {
   bottom: "pool2"
   top: "res3a_branch2a"
   param {
-    lr_mult: 1
-    decay_mult: 1
+    lr_mult: 0
+    decay_mult: 0
   }
   param {
-    lr_mult: 2
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -407,6 +419,9 @@ layer {
     lr_mult: 0
     decay_mult: 0
   }
+  batch_norm_param {
+    use_global_stats: true
+  }
 }
 layer {
   name: "res3a_branch2a/scale"
@@ -414,11 +429,11 @@ layer {
   bottom: "res3a_branch2a"
   top: "res3a_branch2a"
   param {
-    lr_mult: 0.1
+    lr_mult: 0
     decay_mult: 0.0
   }
   param {
-    lr_mult: 0.2
+    lr_mult: 0
     decay_mult: 0.0
   }
   scale_param {
@@ -443,11 +458,11 @@ layer {
   bottom: "res3a_branch2a"
   top: "res3a_branch2b"
   param {
-    lr_mult: 1
-    decay_mult: 1
+    lr_mult: 0
+    decay_mult: 0
   }
   param {
-    lr_mult: 2
+    lr_mult: 0
     decay_mult: 0
   }
   convolution_param {
@@ -484,6 +499,9 @@ layer {
     lr_mult: 0
     decay_mult: 0
   }
+  batch_norm_param {
+    use_global_stats: true
+  }
 }
 layer {
   name: "res3a_branch2b/scale"
@@ -491,11 +509,11 @@ layer {
   bottom: "res3a_branch2b"
   top: "res3a_branch2b"
   param {
-    lr_mult: 0.1
+    lr_mult: 0
     decay_mult: 0.0
   }
   param {
-    lr_mult: 0.2
+    lr_mult: 0
     decay_mult: 0.0
   }
   scale_param {

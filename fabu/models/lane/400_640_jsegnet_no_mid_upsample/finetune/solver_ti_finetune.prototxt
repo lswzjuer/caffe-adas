@@ -1,6 +1,6 @@
 train_net: "./train_ti_finetune.prototxt"
 test_net: "./test_ti_finetune.prototxt"
-test_iter: 63
+test_iter: 72
 test_interval: 1000
 base_lr: 1e-2
 display: 10

@@ -7,8 +7,11 @@ sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-net_file= '../../models/od/400_640_mobilenetv1_ssd/deploy.prototxt'  
-caffe_model='../../models/od/400_640_mobilenetv1_ssd/deploy.caffemodel'  
+#net_file= '../../models/od/400_640_mobilenetv1_ssd/deploy.prototxt'  
+#caffe_model='../../models/od/400_640_mobilenetv1_ssd/deploy.caffemodel'  
+
+net_file= '../../models/od/400_640_JDetNet/deploy.prototxt'  
+caffe_model='../../models/od/400_640_JDetNet/ssdJacintoNetV2_iter_130000.caffemodel'  
 
 test_dir = "input"
 out_dir = 'output'
@@ -30,7 +33,8 @@ def preprocess(src):
     #img = img - 127.5
     mean = (104, 117, 123)
     img = img - mean
-    img = img * 0.007843
+    #MobileNetSSD need to subtract mean
+    #img = img * 0.007843
     return img
 
 def postprocess(img, out):   
@@ -41,6 +45,7 @@ def postprocess(img, out):
 
     cls = out['detection_out'][0,0,:,1]
     conf = out['detection_out'][0,0,:,2]
+    print conf
     return (box.astype(np.int32), conf, cls)
 
 def detect(imgfile):

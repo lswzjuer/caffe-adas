@@ -105,3 +105,7 @@ examples/*/*lmdb
 # images
 *.jpg
 *.png
+
+# models & log
+log*
+snapshot*

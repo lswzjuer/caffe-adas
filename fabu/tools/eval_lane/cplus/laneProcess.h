@@ -25,7 +25,8 @@ private:
     std::string _imageName;
     std::string _savepath;
 
-    int _areaThreshold = 4;
+    int _areaThreshold = 6;
+    int _xDiffThreshold = 40;
     int _scaleRatio = 8;
 
     int _laneList[5] = {1, 2, 3, 4, 5};

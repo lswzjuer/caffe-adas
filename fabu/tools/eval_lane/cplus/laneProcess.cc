@@ -204,8 +204,8 @@ std::vector<cv::Point> laneProcess::getTargetExtPoints(std::vector<cv::Point> al
 /// \param filter The filter method. "larger" or "smaller".
 cv::Point laneProcess::filterExtPoints(std::vector<cv::Point> targetPoints, std::string filter) {
     cv::Point finalPoint, maxPoint, minPoint;
-    int maxIndex = 0;
 
+    //std::cout << "target points size: " << targetPoints.size() << std::endl;
     maxPoint = targetPoints[0];
     minPoint = targetPoints[0];
     for(int i = 1; i < targetPoints.size(); i++){
@@ -218,7 +218,19 @@ cv::Point laneProcess::filterExtPoints(std::vector<cv::Point> targetPoints, std:
             minPoint.y = targetPoints[i].y;
         }
     }
-
+    
+    cv::Point tmpMax = maxPoint;
+    cv::Point tmpMin = minPoint;
+    for(int i = 0; i < targetPoints.size(); i++) {
+        //std::cout << "diff: " << tmpMax.x << " " << targetPoints[i].x << std::endl;
+        if(abs(tmpMax.x - targetPoints[i].x) < _xDiffThreshold){
+            maxPoint.x = (maxPoint.x + targetPoints[i].x) / 2;
+        }
+        
+        if(abs(targetPoints[i].x - tmpMin.x) < _xDiffThreshold){
+            minPoint.x = (minPoint.x + targetPoints[i].x) / 2;
+        }
+    }
     if(filter == "larger"){
         finalPoint = maxPoint;
     }
@@ -240,6 +252,18 @@ cv::Point laneProcess::getMaxYPoint(std::vector<cv::Point> sigleContourPoints) {
             maxYPoint.y = sigleContourPoints[i].y;
         }
     }
+
+    long xValueSum = 0;
+    int xValueNum = 0;
+    for(int i = 0; i < sigleContourPoints.size(); i++){
+        if(sigleContourPoints[i].y == maxYPoint.y) {
+            xValueSum += sigleContourPoints[i].x;
+            xValueNum += 1;
+        }
+    }
+    // take x_axis mean of all maxYPoints 
+    maxYPoint.x = (int)xValueSum / (xValueNum + 1e-30);
+
     return maxYPoint;
 }
 

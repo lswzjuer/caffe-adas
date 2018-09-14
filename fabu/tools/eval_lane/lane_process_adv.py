@@ -14,8 +14,7 @@ class laneProcess():
         self._regionList = []
         self._regionLabels = []
         self._laneList = []
-        self._laneTypes = ["l1", "r1", "l2", "r2", "mid"]
-        
+        self._laneTypes = ["l1", "r1", "l2", "r2", "mid"] 
         self._path = savepath
         self._ratio = ratio   # scale parameters (srcImg.height/predImg.height)
         
@@ -94,6 +93,7 @@ class laneProcess():
         regionNum = len(np.unique(regionImg))
         regionList = []
         laneList = []
+        regionPointsList = []
         
         for l_index in range(1, regionNum):
             if prop[l_index - 1].area < areaThreshold:
@@ -104,10 +104,12 @@ class laneProcess():
                 laneType = self.findMostPixelValue(predImg, prop[l_index - 1].coords)
                 laneList.append(laneType)
                 regionList.append(l_index)
-                #print("l_index, laneType: ", l_index, laneType, len(prop[l_index - 1].coords))
+                pointsNum = regionImg[np.where(regionImg == l_index)].shape[0]
+                regionPointsList.append(pointsNum)
+                #print("l_index, laneType: ", l_index, laneType, len(prop[l_index - 1].coords), pointsNum)
         
         #print("regionList: ", regionList, regionNum)
-        return regionImg, regionList, laneList
+        return regionImg, regionList, laneList, regionPointsList
     
     def getRegionLabel(self, predImg):
         """Use skimage.measure to find the connecte regions in image predicted by NN.
@@ -123,12 +125,13 @@ class laneProcess():
         
         regionImg = measure.label(predImg, connectivity=2)
 
-        labels, regionList, laneList = self.filterRegion(predImg, regionImg, 100/self._ratio, 40/self._ratio)
+        labels, regionList, laneList, regionPointsList = self.filterRegion(predImg, regionImg, 80/self._ratio, 30/self._ratio)
         
         self._regionNum = len(np.unique(labels)) - 1  # ignore background label 0
         self._regionList = regionList
         self._regionLabels = labels
         self._laneList = laneList
+        self._regionPointsList = regionPointsList
         #print("regionNum: ", self._regionNum)
         
         assert(len(self._regionList) == self._regionNum)
@@ -164,17 +167,18 @@ class laneProcess():
         self._allLanePoints = np.array(allLanePoints)
         #print("allLanePoints: ", self._allLanePoints.shape)
     
-    def getExtPoints(self, height):  
+    def getExtPoints(self):  
         """Get the extension points for all lanes.
         param:
             height: Used to calculate the extension points in the bottom of image.
         """
-        hNum = height
+        hNum = self._height
         
         laneNum = self._regionNum
         points = self._allLanePoints
         
         all_ext_points = []
+        all_lineFuncs = []
         
         for c_index in range(0, laneNum):
             linePoints = points[c_index]
@@ -187,7 +191,8 @@ class laneProcess():
             
             z1 = np.polyfit(y, x, 1)   ## fit a line
             lineFunc = np.poly1d(z1)
-            #print("lineFunc: ", lineFunc)
+            #print("lineFunc: ", lineFunc, z1)
+            all_lineFuncs.append(z1)
             
             ext_y = hNum
             ext_x = int(lineFunc(ext_y))
@@ -195,6 +200,60 @@ class laneProcess():
             all_ext_points.append([ext_x, ext_y])
                   
         self._all_ext_points = all_ext_points
+        print("raw all_ext_points: ", self._all_ext_points)
+        self._all_lineFuncs = all_lineFuncs
+
+    def calLaneSimilarity(self, target_points_x):
+        """calculate the similarity between different lane functions by extension points
+        """
+        
+        x_values = target_points_x[:]
+        pointsNum = len(x_values)
+        mergeRegionPair = []
+        ## usually pointsNum will be small than 3
+        for i in range(0, pointsNum):
+            for j in range(i+1, pointsNum):
+                diff = x_values[i] - x_values[j]
+                if np.abs(diff) < 100:
+                    #print("diff: ", diff)
+                    mergeRegionPair.append([i, j])
+    
+        #print("mergeRegionPair: ", mergeRegionPair)
+        return mergeRegionPair
+
+    def mergeLaneRegion(self, mergePair, target_lane_points, filterType):
+        pairNum = len(mergePair)
+        coord = []
+        laneFunc = []
+        for i in range(0, pairNum):
+            newPoint = []
+            region1, region2 = mergePair[i]
+            
+            newPoint.extend(target_lane_points[region1][:])
+            newPoint.extend(target_lane_points[region2][:])
+            #print("type: ", len(target_lane_points[region1]), len(target_lane_points[region2]))
+            #print("newPoints: ", len(newPoint), newPoint)
+            newPoint = np.array(newPoint)
+            x = newPoint[:, 0]
+            y = newPoint[:, 1]
+            
+            z1 = np.polyfit(y, x, 1)   ## fit a line
+            lineFunc = np.poly1d(z1)
+            
+            ext_y = self._height
+            ext_x = int(lineFunc(ext_y))
+            #print("new ext_y, ext_x: ", ext_x, ext_y)
+            laneFunc.append(z1)
+            coord.append(ext_x)
+
+        coord = np.array(coord)
+        min_ext = np.argmin(coord)
+        max_ext = np.argmax(coord)
+
+        if filterType == "larger":
+            return [coord[max_ext], self._height], laneFunc[max_ext]
+        else:
+            return [coord[min_ext], self._height], laneFunc[min_ext]
 
     def getSigleLaneExtPoints(self, laneName, filterType):
         """Get ext points of lane L1, R1 and M by filtering the coords. 
@@ -202,24 +261,64 @@ class laneProcess():
         """
         all_ext_points = np.array(self._all_ext_points)
         laneList = np.array(self._laneList)
+        all_lineFuncs = np.array(self._all_lineFuncs)
+        all_lane_points = np.array(self._allLanePoints)
         
         target_index = np.where(laneList == laneName)[0]
         target_points_x = all_ext_points[target_index][:, 0]
-        #print("target_index: ", target_index, target_points_x) 
-       
+        #print("target_index: ", type(target_index), target_index.shape[0], target_index, target_points_x)
+        target_lane_points = all_lane_points[target_index]
+        target_lineFunc = all_lineFuncs[target_index]
+        #print("target_lane_points: ", type(target_lane_points), target_lane_points)
+
         coord = []
+        line_func = []
         if filterType == "larger":
             maxIndex = np.argmax(target_points_x)
             maxIndex = target_index[maxIndex]
             coord = all_ext_points[maxIndex]
+            line_func = all_lineFuncs[maxIndex]
+            
+            if target_index.shape[0] > 1:
+                mergePair = self.calLaneSimilarity(target_points_x)
+                ## need to merge different region
+                if(len(mergePair) >= 1):
+                    coord, line_func = self.mergeLaneRegion(mergePair, target_lane_points, filterType)
+                    
         if filterType == "small":
             minIndex = np.argmin(target_points_x)
             minIndex = target_index[minIndex]
             coord = all_ext_points[minIndex]
+            line_func = all_lineFuncs[minIndex]
+            
+            if target_index.shape[0] > 1:
+                mergePair = self.calLaneSimilarity(target_points_x)
+                ## need to merge different region
+                if(len(mergePair) >= 1):
+                    coord, line_func = self.mergeLaneRegion(mergePair, target_lane_points, filterType)
         
         #print("coord: ", coord)
+        return coord, line_func
+   
+    def getLongestLaneExtPoint(self, laneName):
+        """Get ext points of lane L1, R1 and M by selecting the longest one. 
+        Here, self._laneList should have more than one L1(R1/M)
+        """
+        all_ext_points = np.array(self._all_ext_points)
+        laneList = np.array(self._laneList)
+        pointsNum = np.array(self._regionPointsList)
+
+        target_index = np.where(laneList == laneName)[0]
+        target_points_num = pointsNum[target_index]
+
+        maxIndex = np.argmax(target_points_num)
+        longestIndex = pointsNum.tolist().index(target_points_num[maxIndex])
+        #print("points num: ", pointsNum, longestIndex)
+        x_value, y_value = all_ext_points[longestIndex]
+        coord = [x_value, y_value]
         return coord
-    
+        
+
     def getTargetLaneExtPoints(self):
         all_ext_points = np.array(self._all_ext_points)
         laneList = np.array(self._laneList)
@@ -227,27 +326,33 @@ class laneProcess():
         ## l1 lane
         all_index = np.where(laneList == "l1")[0]
         if len(all_index) > 0:
-            l1_coord = self.getSigleLaneExtPoints("l1", "larger")
+            l1_coord, l1_func = self.getSigleLaneExtPoints("l1", "larger")
         else:
             l1_coord = []
-        
+            l1_func = []
+        #print("l1_coord: ", l1_coord)
+
         # r1 lane
         all_index = np.where(laneList == "r1")[0]
         if len(all_index) > 0:
-            r1_coord = self.getSigleLaneExtPoints("r1", "small")
+            r1_coord, r1_func  = self.getSigleLaneExtPoints("r1", "small")
         else:
             r1_coord = []
+            r1_func = []
+        #print("r1_coord: ", r1_coord)
         
         # mid lane
         all_index = np.where(laneList == "mid")[0]
         if len(all_index) > 0:
-            mid_coord = self.getSigleLaneExtPoints("mid", "small")
+            mid_coord, mid_func = self.getSigleLaneExtPoints("mid", "small")
         else:
             mid_coord = []
+            mid_func = []
             
         targetLane = [l1_coord, r1_coord, mid_coord]
-        #print("targetLane: ", targetLane)
-        return targetLane
+        targetFuncs = [l1_func, r1_func, mid_func]
+        print("targetLane: ", targetLane)
+        return targetLane, targetFuncs
         
     
     def drawPredPoints(self, srcImg):
@@ -287,7 +392,7 @@ class laneProcess():
                 cv2.circle(decodeImage, (int(x), int(y)), 10, color_map[laneMap[i]], 10)
         cv2.imwrite(self._path + self._imgName + "_targetPoints.jpg", decodeImage)
     
-    def drawExtPoints(self, srcImg, all_ext_points, targetPoints): 
+    def drawExtPoints(self, srcImg, all_ext_points, targetPoints, targetLineFuncs): 
         """draw the lane line in source image.          
         """
         hNum, wNum, _ = srcImg.shape
@@ -310,20 +415,31 @@ class laneProcess():
             
             laneType = self._laneList[c_index]
             # draw prelong lines
-            cv2.line(decodeImage, (x[-1], y[-1]), (ext_x, ext_y),  (255, 245, 152), 3)
+            #cv2.line(decodeImage, (x[-1], y[-1]), (ext_x, ext_y),  (255, 245, 152), 3)
             for p_index in range(0, pointsNum): 
                 cv2.circle(decodeImage, ((x[p_index]), y[p_index]), 3, color_map[laneType], 3)
-                
             ## draw ext_points
             cv2.circle(decodeImage, (ext_x, ext_y), 2, (255, 245, 152), 2)
-            
+            if(self._laneList[c_index] in ["l1", "r1", "mid"]):
+                cv2.putText(decodeImage, "%s: (%d %d)"%(self._laneList[c_index], ext_x, ext_y), (20, 100+30*c_index), cv2.FONT_HERSHEY_SIMPLEX, 1, color_map[laneType], 1)
+ 
             laneMap = ["l1", "r1", "mid"]
-            for i in range(0, len(targetPoints)):
-                if len(targetPoints[i]) > 0:
-                    x, y = targetPoints[i]
-                    cv2.circle(decodeImage, (int(x), int(y)), 10, color_map[laneMap[i]], 10)
-
-        cv2.imwrite(self._path + self._imgName + "_ext.jpg", decodeImage)       
+            cur_lane = self._laneList[c_index]
+            if (cur_lane in laneMap):
+                lane_index = laneMap.index(cur_lane)
+                if len(targetPoints[lane_index]) > 0:
+                    slope, intercept = targetLineFuncs[lane_index]
+                    new_y = y[-1]
+                    
+                    new_ext_x, new_ext_y = targetPoints[lane_index]
+                    if(np.abs(new_ext_x - ext_x) < 30):
+                        new_y = y[-1]
+                        new_x = new_y * slope + intercept
+                        cv2.line(decodeImage, (int(new_x), int(new_y)), (int(new_ext_x), int(new_ext_y)), (255, 245, 152), 5)  
+                        cv2.circle(decodeImage, (int(new_ext_x), int(new_ext_y)), 15, color_map[laneMap[lane_index]], 15)
+                        cv2.putText(decodeImage, "%s: (%d %d)"%(laneMap[lane_index], new_ext_x, new_ext_y), (30, 20+30*lane_index), cv2.FONT_HERSHEY_SIMPLEX, 1, color_map[laneMap[lane_index]], 2)
+        
+        cv2.imwrite(self._path + self._imgName + "_extNew.jpg", decodeImage)       
 
     def processLane(self, predImg, srcImg, imgName, drawFlag):
         if len(predImg.shape) == 3:
@@ -338,18 +454,20 @@ class laneProcess():
         self.getLanePoints()
 
         height, width, _= srcImg.shape
-        self.getExtPoints(height)
+        self._height = height
+        self.getExtPoints()
         #print("all_ext_points: ", self._all_ext_points, self._laneList)
         
         if len(self._laneList) > 0:
-            targetLanes = self.getTargetLaneExtPoints()
+            targetLanes, targetLineFuncs = self.getTargetLaneExtPoints()
         else:
             targetLanes = None
+            targetLineFuncs = None
         #print("targetLane: ", targetLanes)
 
         if drawFlag:
             self.drawPredPoints(srcImg)
-            self.drawExtPoints(srcImg, self._all_ext_points, targetLanes)
+            self.drawExtPoints(srcImg, self._all_ext_points, targetLanes, targetLineFuncs)
             #self.drawTargetlaneExtPoints(srcImg, targetLanes)
             #cv2.imwrite(self._path + self._imgName + "_region.jpg", self._regionLabels*32)
         

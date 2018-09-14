@@ -114,6 +114,8 @@ class SoftmaxWithLossLayer : public LossLayer<Dtype> {
   int ignore_label_;
   /// How to normalize the output loss.
   LossParameter_NormalizationMode normalization_;
+  /// Hard negative mining.
+  bool hard_negative_mining_;
 
   int softmax_axis_, outer_num_, inner_num_;
 };

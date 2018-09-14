@@ -2,6 +2,5 @@
 set -e
 #  --weights=./pretrained/train.caffemodel
     #-snapshot=./models/ti_iter_27000.solverstate \
- ./../caffe-ssd/build/tools/caffe train \
-    -snapshot=./models/ti_sim_iter_60000.solverstate \
-    --solver=./net/lane_loc/solver_ti.prototxt --gpu 0,1 2>&1 | tee log_ti.txt.`date +'%Y-%m-%d_%H-%M-%S'`
+ ~/ADAS_caffe/build/tools/caffe train \
+    --solver=solver_ti.prototxt --gpu 0,1,2,3,4,5,6,7 2>&1 | tee log_ti.txt.`date +'%Y-%m-%d_%H-%M-%S'`

@@ -21,14 +21,14 @@ layer {
     }
   }
   data_param {
-    source: "/private/wangwenxiao/adas_dataset/class9_lmdb/adas_od_val_lmdb"
+    source: "/private/wangwenxiao/adas_dataset/class5_lmdb/adas_od_val_lmdb"
     batch_size: 8
     backend: LMDB
   }
   annotated_data_param {
     batch_sampler {
     }
-    label_map_file: "labelmap_zy_obstacle9.prototxt"
+    #label_map_file: "labelmap_zy_obstacle9.prototxt"
   }
 }
 layer {
@@ -45,7 +45,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 32
+    num_output: 16
     bias_term: true
     pad: 2
     kernel_size: 5
@@ -1332,7 +1332,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 54
+    num_output: 36
     bias_term: true
     pad: 0
     kernel_size: 1
@@ -1457,7 +1457,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 54
+    num_output: 36
     bias_term: true
     pad: 0
     kernel_size: 1
@@ -1582,7 +1582,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 54
+    num_output: 36
     bias_term: true
     pad: 0
     kernel_size: 1
@@ -1707,7 +1707,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 54
+    num_output: 36
     bias_term: true
     pad: 0
     kernel_size: 1
@@ -1832,7 +1832,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 54
+    num_output: 36
     bias_term: true
     pad: 0
     kernel_size: 1
@@ -1940,7 +1940,7 @@ layer {
     shape {
       dim: 0
       dim: -1
-      dim: 9
+      dim: 6
     }
   }
 }
@@ -1973,7 +1973,7 @@ layer {
     phase: TEST
   }
   detection_output_param {
-    num_classes: 9
+    num_classes: 6
     share_location: true
     background_label_id: 0
     nms_param {
@@ -1995,7 +1995,7 @@ layer {
     phase: TEST
   }
   detection_evaluate_param {
-    num_classes: 9
+    num_classes: 6
     background_label_id: 0
     overlap_threshold: 0.5
     evaluate_difficult_gt: false

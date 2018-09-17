@@ -4,7 +4,7 @@ layer {
     type: "Data"
     top: "data"
     data_param{
-        source: "/home/yaowanchao/MobileNetV1-SSD/400_640_val/lane4_val_image_lmdb_400_640"
+        source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_image_lmdb_400_640"
         backend: LMDB
         batch_size: 16
     }
@@ -23,7 +23,7 @@ layer {
     type: "Data"
     top: "label"
     data_param{
-        source: "/home/yaowanchao/MobileNetV1-SSD/400_640_val/lane4_val_label_lmdb_400_640"
+        source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_label_lmdb_400_640"
         backend: LMDB
         batch_size: 16
     }

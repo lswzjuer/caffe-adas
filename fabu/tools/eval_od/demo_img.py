@@ -27,14 +27,16 @@ CLASSES = ('background',
           'car', 'bus', 'truck', 'person', 'bicycle', 'motor', 'tricycle', 'block')
 
 def preprocess(src):
-    #img = cv2.resize(src, (300,300))
     img = cv2.resize(src, (640,400))
 
-    #img = img - 127.5
-    mean = (104, 117, 123)
-    img = img - mean
-    #MobileNetSSD need to subtract mean
+    #MobileNetSSD preprocess
+    #mean = (104, 117, 123)
     #img = img * 0.007843
+
+    #JDet
+    mean = (128, 128, 128)
+    img = img - mean
+
     return img
 
 def postprocess(img, out):   
@@ -59,7 +61,7 @@ def detect(imgfile):
     out = net.forward()  
     box, conf, cls = postprocess(origimg, out)
 
-#print box
+    #print box
     #print cls, conf
     #print net.blobs['conv0'].data.shape
     #print net.blobs['conv0'].data[0][0][0]

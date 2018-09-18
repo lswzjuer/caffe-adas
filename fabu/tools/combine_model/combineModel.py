@@ -9,10 +9,10 @@ caffe.set_device(4)
 caffe.set_mode_gpu()
 
 def init():
-    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_28000.caffemodel'
-    lanePro = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/deploy_ti.prototxt'
+    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_20000.caffemodel'
+    lanePro = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/deploy_ti_finetune.prototxt'
 
-    odModel = '/home/yaowanchao/ADAS_caffe/fabu/models/od/400_640_JDetNet/ssdJacintoNetV2_iter_130000.caffemodel'
+    odModel = '/home/yaowanchao/ADAS_caffe/fabu/models/od/400_640_JDetNet/ssdJacintoNetV2_iter_92000.caffemodel'
     odPro = '/home/yaowanchao/ADAS_caffe/fabu/models/od/400_640_JDetNet/deploy.prototxt'
 
     global lane_od_model
@@ -170,8 +170,8 @@ if __name__ == '__main__':
 
     #copyData(lane_od_net, laneNet, 'conv4_1/bn')
    
-    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_28000.caffemodel'
-    lanePro = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/deploy_ti.prototxt'
+    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_20000.caffemodel'
+    lanePro = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/deploy_ti_finetune.prototxt'
     lane_od_pro = './lane_od_deploy.prototxt'
     
     lane_od_net = caffe.Net(lane_od_pro, lane_od_model, caffe.TEST)

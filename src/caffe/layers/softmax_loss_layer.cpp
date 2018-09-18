@@ -33,6 +33,8 @@ void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
   } else {
     normalization_ = this->layer_param_.loss_param().normalization();
   }
+
+  hard_negative_mining_ = this->layer_param_.softmax_param().hard_negative_mining();
 }
 
 template <typename Dtype>

@@ -4,7 +4,7 @@ layer {
     type: "Data"
     top: "data"
     data_param{
-        source: "/home/yaowanchao/MobileNetV1-SSD/400_640_val/lane4_val_image_lmdb_400_640"
+        source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_image_lmdb_400_640"
         backend: LMDB
         batch_size: 16
     }
@@ -23,7 +23,8 @@ layer {
     type: "Data"
     top: "label"
     data_param{
-        source: "/home/yaowanchao/MobileNetV1-SSD/400_640_val/lane4_val_label_lmdb_400_640"
+        source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_label_lmdb_400_640"
+        #source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_label_lmdb_50_80"
         backend: LMDB
         batch_size: 16
     }
@@ -44,7 +45,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 32
+    num_output: 16
     bias_term: true
     pad: 2
     kernel_size: 5
@@ -1499,6 +1500,7 @@ layer {
   name: "loss"
   type: "SoftmaxWithLoss"
   bottom: "out_deconv_final_up8"
+  #bottom: "ctx_final"
   bottom: "label"
   top: "loss"
   loss_param {
@@ -1510,6 +1512,7 @@ layer {
   name: "accuracy/top1"
   type: "Accuracy"
   bottom: "out_deconv_final_up8"
+  #bottom: "ctx_final"
   bottom: "label"
   top: "accuracy/top1"
   include {
@@ -1523,6 +1526,7 @@ layer {
   name: "accuracy/top5"
   type: "Accuracy"
   bottom: "out_deconv_final_up8"
+  #bottom: "ctx_final"
   bottom: "label"
   top: "accuracy/top5"
   include {

@@ -1488,6 +1488,9 @@ layer {
     ignore_label: 255
     normalization: VALID
   }
+  softmax_param {
+    hard_negative_mining: true
+  }
 }
 layer {
   name: "accuracy/top1"

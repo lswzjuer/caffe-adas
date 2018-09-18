@@ -1660,6 +1660,9 @@ message SoftmaxParameter {
   // Weighted softmax loss
   optional float pos_mult = 3 [default = 1];
   optional int32 pos_cid = 4 [default = 1];
+  
+  // Hard negative mining
+  optional bool hard_negative_mining = 5 [default = false];
 }
 
 message TanHParameter {

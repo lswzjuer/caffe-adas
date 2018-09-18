@@ -350,6 +350,7 @@ class laneProcess():
             mid_func = []
             
         targetLane = [l1_coord, r1_coord, mid_coord]
+        # l1_func: [slope intercept]
         targetFuncs = [l1_func, r1_func, mid_func]
         print("targetLane: ", targetLane)
         return targetLane, targetFuncs

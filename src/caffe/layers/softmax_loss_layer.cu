@@ -91,7 +91,12 @@ void SoftmaxWithLossLayer<Dtype>::Forward_gpu(
   }
   Dtype normalizer = LossLayer<Dtype>::GetNormalizer(
       normalization_, outer_num_, inner_num_, valid_count);
-  top[0]->mutable_cpu_data()[0] = loss / (normalizer * 0.3);
+  if (!hard_negative_mining_) {
+    top[0]->mutable_cpu_data()[0] = loss / (normalizer);
+  }
+  else {
+    top[0]->mutable_cpu_data()[0] = loss / (normalizer * 0.3);
+  }
   if (top.size() == 2) {
     top[1]->ShareData(prob_);
   }

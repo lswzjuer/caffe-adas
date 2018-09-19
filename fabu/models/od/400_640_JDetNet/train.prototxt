@@ -47,6 +47,7 @@ layer {
   }
   data_param {
     source: "/private/wangwenxiao/adas_dataset/class5_lmdb/adas_od_train_lmdb"
+    #source: "/private/wangwenxiao/adas_dataset/class5_person_lmdb/adas_person_train_lmdb"
     batch_size: 24
     backend: LMDB
   }

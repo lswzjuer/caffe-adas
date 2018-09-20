@@ -4,8 +4,8 @@ root_dir=$cur_dir/../..
 cd $root_dir
 
 redo=1
-data_root_dir="$HOME/data/VOCdevkit"
-dataset_name="VOC0712"
+data_root_dir="/wangwenxiao/adas_dataset"
+dataset_name="adas_od"
 mapfile="$root_dir/data/$dataset_name/labelmap_voc.prototxt"
 anno_type="detection"
 db="lmdb"

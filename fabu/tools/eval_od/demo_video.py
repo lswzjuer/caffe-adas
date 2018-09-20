@@ -7,8 +7,10 @@ sys.path.insert(0, caffe_root + 'python')
 import caffe  
 
 
-net_file= '../../models/od/400_640_mobilenetv1_ssd/deploy.prototxt'  
-caffe_model='../../models/od/400_640_mobilenetv1_ssd/deploy.caffemodel'  
+#net_file= '../../models/od/400_640_mobilenetv1_ssd/deploy.prototxt'  
+#caffe_model='../../models/od/400_640_mobilenetv1_ssd/deploy.caffemodel'  
+net_file = '../../models/lane_od/400_640_ti_conv1a_16/lane_od_deploy.prototxt'
+caffe_model = '../../models/lane_od/400_640_ti_conv1a_16/lane_od.caffemodel'
 
 test_dir = "input"
 out_dir = 'output'
@@ -24,13 +26,15 @@ CLASSES = ('background',
           'car', 'bus', 'truck', 'person', 'bicycle', 'motor', 'tricycle', 'block')
 
 def preprocess(src):
-    img = cv2.resize(src, (640,400))
+    #img = cv2.resize(src, (640,400))
+    img = src[96:, 64: 576]
+    print img.shape
 
-    #img = img - 127.5
-    mean = (104, 117, 123)
-    img = img - mean
+    img = img - 128.0
+    #mean = (104, 117, 123)
+    #img = img - mean
 
-    img = img * 0.007843
+    #img = img * 0.007843
     return img
 
 def postprocess(img, out):   

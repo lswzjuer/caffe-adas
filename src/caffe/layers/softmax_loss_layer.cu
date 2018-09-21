@@ -66,15 +66,17 @@ void SoftmaxWithLossLayer<Dtype>::Forward_gpu(
     qsort(cpu_loss_data, nthreads, sizeof(Dtype), compare<Dtype>);
     int i = 0;
     for (; i < nthreads * 0.7; i++) {
-      loss += cpu_loss_data[i];
+      //loss += cpu_loss_data[i];
       //printf("i: %d %f\n", i, cpu_loss_data[i]);
     }
     for (; i < nthreads * 0.9; i++) {
-      loss += cpu_loss_data[i] * 3;
+      loss += cpu_loss_data[i];
+      //loss += cpu_loss_data[i] * 3;
       //printf("i: %d %f\n", i, cpu_loss_data[i]);
     }
     for (; i < nthreads; i++) {
-      loss += cpu_loss_data[i] * 10;
+      loss += cpu_loss_data[i];
+      //loss += cpu_loss_data[i] * 10;
       //printf("i: %d %f\n", i, cpu_loss_data[i]);
     }
   }
@@ -89,7 +91,12 @@ void SoftmaxWithLossLayer<Dtype>::Forward_gpu(
   }
   Dtype normalizer = LossLayer<Dtype>::GetNormalizer(
       normalization_, outer_num_, inner_num_, valid_count);
-  top[0]->mutable_cpu_data()[0] = loss / normalizer;
+  if (!hard_negative_mining_) {
+    top[0]->mutable_cpu_data()[0] = loss / (normalizer);
+  }
+  else {
+    top[0]->mutable_cpu_data()[0] = loss / (normalizer * 0.3);
+  }
   if (top.size() == 2) {
     top[1]->ShareData(prob_);
   }

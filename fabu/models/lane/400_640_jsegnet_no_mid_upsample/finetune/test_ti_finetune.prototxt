@@ -4,7 +4,8 @@ layer {
     type: "Data"
     top: "data"
     data_param{
-        source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_image_lmdb_400_640"
+        #source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_image_lmdb_400_640"
+        source: "/private/sunxiang/data/LANE/LMDB/384_512/lane4_cityRoad4k_val_image_lmdb_384_512"
         backend: LMDB
         batch_size: 16
     }
@@ -23,8 +24,9 @@ layer {
     type: "Data"
     top: "label"
     data_param{
-        source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_label_lmdb_400_640"
+        #source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_label_lmdb_400_640"
         #source: "/private/sunxiang/data/LANE/LMDB/400_640/lane4_val_label_lmdb_50_80"
+        source: "/private/sunxiang/data/LANE/LMDB/384_512/lane4_cityRoad4k_val_label_lmdb_48_64"
         backend: LMDB
         batch_size: 16
     }
@@ -1433,74 +1435,74 @@ layer {
   bottom: "ctx_final"
   top: "ctx_final"
 }
-layer {
-  name: "out_deconv_final_up2"
-  type: "Deconvolution"
-  bottom: "ctx_final"
-  top: "out_deconv_final_up2"
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 6
-    bias_term: false
-    pad: 1
-    kernel_size: 4
-    group: 6
-    stride: 2
-    weight_filler {
-      type: "bilinear"
-    }
-  }
-}
-layer {
-  name: "out_deconv_final_up4"
-  type: "Deconvolution"
-  bottom: "out_deconv_final_up2"
-  top: "out_deconv_final_up4"
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 6
-    bias_term: false
-    pad: 1
-    kernel_size: 4
-    group: 6
-    stride: 2
-    weight_filler {
-      type: "bilinear"
-    }
-  }
-}
-layer {
-  name: "out_deconv_final_up8"
-  type: "Deconvolution"
-  bottom: "out_deconv_final_up4"
-  top: "out_deconv_final_up8"
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 6
-    bias_term: false
-    pad: 1
-    kernel_size: 4
-    group: 6
-    stride: 2
-    weight_filler {
-      type: "bilinear"
-    }
-  }
-}
+#layer {
+#  name: "out_deconv_final_up2"
+#  type: "Deconvolution"
+#  bottom: "ctx_final"
+#  top: "out_deconv_final_up2"
+#  param {
+#    lr_mult: 0
+#    decay_mult: 0
+#  }
+#  convolution_param {
+#    num_output: 6
+#    bias_term: false
+#    pad: 1
+#    kernel_size: 4
+#    group: 6
+#    stride: 2
+#    weight_filler {
+#      type: "bilinear"
+#    }
+#  }
+#}
+#layer {
+#  name: "out_deconv_final_up4"
+#  type: "Deconvolution"
+#  bottom: "out_deconv_final_up2"
+#  top: "out_deconv_final_up4"
+#  param {
+#    lr_mult: 0
+#    decay_mult: 0
+#  }
+#  convolution_param {
+#    num_output: 6
+#    bias_term: false
+#    pad: 1
+#    kernel_size: 4
+#    group: 6
+#    stride: 2
+#    weight_filler {
+#      type: "bilinear"
+#    }
+#  }
+#}
+#layer {
+#  name: "out_deconv_final_up8"
+#  type: "Deconvolution"
+#  bottom: "out_deconv_final_up4"
+#  top: "out_deconv_final_up8"
+#  param {
+#    lr_mult: 0
+#    decay_mult: 0
+#  }
+#  convolution_param {
+#    num_output: 6
+#    bias_term: false
+#    pad: 1
+#    kernel_size: 4
+#    group: 6
+#    stride: 2
+#    weight_filler {
+#      type: "bilinear"
+#    }
+#  }
+#}
 layer {
   name: "loss"
   type: "SoftmaxWithLoss"
-  bottom: "out_deconv_final_up8"
-  #bottom: "ctx_final"
+  #bottom: "out_deconv_final_up8"
+  bottom: "ctx_final"
   bottom: "label"
   top: "loss"
   loss_param {
@@ -1511,8 +1513,8 @@ layer {
 layer {
   name: "accuracy/top1"
   type: "Accuracy"
-  bottom: "out_deconv_final_up8"
-  #bottom: "ctx_final"
+  #bottom: "out_deconv_final_up8"
+  bottom: "ctx_final"
   bottom: "label"
   top: "accuracy/top1"
   include {
@@ -1525,8 +1527,8 @@ layer {
 layer {
   name: "accuracy/top5"
   type: "Accuracy"
-  bottom: "out_deconv_final_up8"
-  #bottom: "ctx_final"
+  #bottom: "out_deconv_final_up8"
+  bottom: "ctx_final"
   bottom: "label"
   top: "accuracy/top5"
   include {

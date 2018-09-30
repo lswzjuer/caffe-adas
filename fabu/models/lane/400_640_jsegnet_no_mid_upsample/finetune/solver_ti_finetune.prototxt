@@ -17,8 +17,8 @@ snapshot_after_train: true
 test_initialization: false
 average_loss: 10
 stepvalue: 60000
-stepvalue: 20000
-stepvalue: 3000000
+stepvalue: 200000
+stepvalue: 300000
 iter_size: 1
 #type: "RMSProp"
 type: "SGD"

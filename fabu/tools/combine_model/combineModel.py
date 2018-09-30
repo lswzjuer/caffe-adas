@@ -9,7 +9,7 @@ caffe.set_device(4)
 caffe.set_mode_gpu()
 
 def init():
-    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_20000.caffemodel'
+    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_12500.caffemodel'
     lanePro = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/deploy_ti_finetune.prototxt'
 
     odModel = '/home/yaowanchao/ADAS_caffe/fabu/models/od/400_640_JDetNet/ssdJacintoNetV2_iter_92000.caffemodel'
@@ -170,19 +170,19 @@ if __name__ == '__main__':
 
     #copyData(lane_od_net, laneNet, 'conv4_1/bn')
    
-    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_20000.caffemodel'
+    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_12500.caffemodel'
     lanePro = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/deploy_ti_finetune.prototxt'
     lane_od_pro = './lane_od_deploy.prototxt'
     
     lane_od_net = caffe.Net(lane_od_pro, lane_od_model, caffe.TEST)
     
     # Debug
-    #lane_file = './laneNet.txt'
-    #writeData(laneNet, lane_file)
-    #lane_od_file = './lane_od_net.txt'
-    #writeData(lane_od_net, lane_od_file)
-    #od_file = './odNet.txt'
-    #writeData(odNet, od_file)
+    lane_file = './laneNet.txt'
+    writeData(laneNet, lane_file)
+    lane_od_file = './lane_od_net.txt'
+    writeData(lane_od_net, lane_od_file)
+    od_file = './odNet.txt'
+    writeData(odNet, od_file)
 
     #printData(lane_od_net, 'conv5_1/lane_loc')
     #printData(laneNet, 'conv5_1/lane_loc')

@@ -12,9 +12,9 @@ layer {
     transform_param {
         #scale: 0.007843
         #mirror: true
-        mean_value: 104.0
-        mean_value: 117.0
-        mean_value: 123.0
+        mean_value: 128.0
+        mean_value: 128.0
+        mean_value: 128.0
     }
     include: { phase: TRAIN }
 }

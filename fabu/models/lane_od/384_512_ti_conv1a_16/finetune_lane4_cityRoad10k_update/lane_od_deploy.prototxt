@@ -1351,8 +1351,8 @@ layer {
   bottom: "data"
   top: "ctx_output1/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 40.0
-    max_size: 80.0
+    min_size: 38.0
+    max_size: 77.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5
@@ -1476,8 +1476,8 @@ layer {
   bottom: "data"
   top: "ctx_output2/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 80.0
-    max_size: 148.0
+    min_size: 77.0
+    max_size: 142.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5
@@ -1601,8 +1601,8 @@ layer {
   bottom: "data"
   top: "ctx_output3/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 216.0
-    max_size: 284.0
+    min_size: 142.0
+    max_size: 207.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5
@@ -1726,8 +1726,8 @@ layer {
   bottom: "data"
   top: "ctx_output4/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 284.0
-    max_size: 352.0
+    min_size: 207.0
+    max_size: 272.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5
@@ -1851,8 +1851,8 @@ layer {
   bottom: "data"
   top: "ctx_output5/relu_mbox_priorbox"
   prior_box_param {
-    min_size: 352.0
-    max_size: 420.0
+    min_size: 272.0
+    max_size: 337.0
     aspect_ratio: 1.0
     aspect_ratio: 2.0
     aspect_ratio: 0.5

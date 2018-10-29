@@ -10,8 +10,17 @@ import caffe
 #net_file= '../../models/od/400_640_mobilenetv1_ssd/deploy.prototxt'  
 #caffe_model='../../models/od/400_640_mobilenetv1_ssd/deploy.caffemodel'  
 
-net_file= '../../models/od/400_640_JDetNet/deploy.prototxt'  
-caffe_model='../../models/od/400_640_JDetNet/ssdJacintoNetV2_iter_130000.caffemodel'  
+#net_file= '../../models/od/400_640_JDetNet/deploy.prototxt'  
+#caffe_model='../../models/od/400_640_JDetNet/ssdJacintoNetV2_iter_130000.caffemodel'  
+
+#net_file = '../../models/lane_od/400_640_ti_conv1a_16/lane_od_deploy.prototxt'
+#caffe_model = '../../models/lane_od/400_640_ti_conv1a_16/lane_od.caffemodel'
+
+#net_file = '../../models/lane_od/400_640_ti/lane_od_deploy.prototxt'
+#caffe_model = '../../models/lane_od/400_640_ti/lane_od.caffemodel'
+
+net_file = '/private/zhangjiwei/od_lane0930/lane_od_deploy_merge_bn.prototxt'
+caffe_model = '/private/zhangjiwei/od_lane0930/lane_od_merge_bn.caffemodel'
 
 test_dir = "input"
 out_dir = 'output'
@@ -27,7 +36,7 @@ CLASSES = ('background',
           'car', 'bus', 'truck', 'person', 'bicycle', 'motor', 'tricycle', 'block')
 
 def preprocess(src):
-    img = cv2.resize(src, (640,400))
+    img = cv2.resize(src, (512,384))
 
     #MobileNetSSD preprocess
     #mean = (104, 117, 123)
@@ -43,14 +52,16 @@ def postprocess(img, out):
     h = img.shape[0]
     w = img.shape[1]
 
-    box = out['detection_out'][0,0,:,3:7] * np.array([w, h, w, h])
+    box = out['detection_out'][0,0,:,3:7]
 
     cls = out['detection_out'][0,0,:,1]
     conf = out['detection_out'][0,0,:,2]
-    print conf
+    print box, conf
+    box = out['detection_out'][0,0,:,3:7] * np.array([w, h, w, h])
     return (box.astype(np.int32), conf, cls)
 
 def detect(imgfile):
+    print imgfile
     origimg = cv2.imread(imgfile)
     img = preprocess(origimg)
     
@@ -60,6 +71,22 @@ def detect(imgfile):
     net.blobs['data'].data[...] = img
     out = net.forward()  
     box, conf, cls = postprocess(origimg, out)
+
+    print net.blobs['mbox_priorbox'].data.shape
+    prior_boxes = net.blobs['mbox_priorbox'].data[0, 0, :]
+    print prior_boxes.shape
+
+    '''
+    for i in range(0, len(prior_boxes), 4):
+        print i / 4, prior_boxes[i], prior_boxes[i+1], prior_boxes[i+2], prior_boxes[i+3] 
+
+    with open('prior_box.h', 'w') as f:
+        for i in range(0, len(prior_boxes), 4):
+            f.write(str(prior_boxes[i]) + ', ')
+            f.write(str(prior_boxes[i+1]) + ', ')
+            f.write(str(prior_boxes[i+2]) + ', ')
+            f.write(str(prior_boxes[i+3]) + ' \\\n')
+    '''
 
     #print box
     #print cls, conf

@@ -1,6 +1,6 @@
-##模型说明
+## 模型说明
 
-###caffe层
+### caffe层
 `caffe_layers` 下存放着模型用到的*shuffle_channel_layer*和*conv_dw_layer*的caffe实现，配置方法同常规的caffe层，具体可参见 [这里](https://github.com/farmingyard/ShuffleNet)。
 
 ### 预训练模型

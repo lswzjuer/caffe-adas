@@ -1,6 +1,6 @@
-##司机行为数据说明
+## 司机行为数据说明
 
-###数据路径
+### 数据路径
 数据存放在`/private/hujinming/data/actionDetect/cropped_data`目录下。其中，该目录下的`public_data` 文件夹存放了从公开数据集中获得的数据，`private_data` 文件夹存放了公司采集的内部数据。而train和test则存放了这些数据的train/test。
 
 ### 脚本说明

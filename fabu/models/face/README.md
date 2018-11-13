@@ -2,7 +2,7 @@
 
 ### caffe层
 
-caffe_layers 下存放着模型用到的shuffle_channel_layer和conv_dw_layer的caffe实现，配置方法同常规的caffe层，具体可参见 这里。
+caffe_layers 下存放着模型用到的shuffle_channel_layer和conv_dw_layer的caffe实现，配置方法同常规的caffe层，具体可参见[这里](https://github.com/farmingyard/ShuffleNet)
 
 ### 数据
 

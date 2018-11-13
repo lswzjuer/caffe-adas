@@ -10,15 +10,15 @@ caffe_layers 下存放着模型用到的shuffle_channel_layer和conv_dw_layer的
 
 ### 脚本
 
-一共有两个脚本用于生成imglist 和 label，分别为filter_train.py 和 generate_label.py， 均存放在/private/zhongxuexian/action/Detect/cropped_data下。
+一共有两个脚本用于生成imglist 和 label，分别为filter_train.py 和 generate_label.py， 均存放在/private/zhongxuexian/actionDetect/cropped_data下。
 
 ### 预训练模型
 
-shufflenet_1x_g3.caffemodel为shufflenetV1在ImageNet上预训练的网络。实验证明这个任务如果不适用预训练的网络，则收敛需要非常长的时间
+shufflenet_1x_g3.caffemodel为shufflenetV1在ImageNet上预训练的网络。实验证明这个任务如果不使用预训练的网络，则收敛需要非常长的时间
 
 ### 训练
 
-prototxt 在fabu/models/face/size100l10shufflenetv1下, 命令如下：~/caffe/build/tools/caffe train --model shufflenet_v1l10train_val.prototxt —weights ../shufflenet1x_g3.caffemodel --solver solver_shuffle_v1l10.prototxt --gpu=2
+prototxt 在fabu/models/face/size100_l10_shufflenetv1下, 命令如下：./train.sh
 
 ### 模型
 

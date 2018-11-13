@@ -14,12 +14,12 @@ layer {
     mean_value: [103.94, 116.78, 123.68]
   }
   image_data_param {
-    source: "/private/hujinming/data/actionDetect/cropped_data/train.txt"
+    source: "/private/zhongxuexian/actionDetect/cropped_data/train.txt"
     batch_size: 32 # your batch size
     shuffle: true
     new_height: 100
     new_width: 100
-    root_folder: "/private/hujinming/data/actionDetect/cropped_data/"
+    root_folder: "/private/zhongxuexian/actionDetect/cropped_data/"
   }
 }
 layer {
@@ -37,12 +37,12 @@ layer {
     mean_value: [103.94, 116.78, 123.68]
   }
   image_data_param {
-    source: "/private/hujinming/data/actionDetect/cropped_data/test.txt"
+    source: "/private/zhongxuexian/actionDetect/cropped_data/test.txt"
     batch_size: 32 # your batch size
     shuffle: true
     new_height: 100
     new_width: 100
-    root_folder: "/private/hujinming/data/actionDetect/cropped_data/"
+    root_folder: "/private/zhongxuexian/actionDetect/cropped_data/"
   }
 }
 layer {

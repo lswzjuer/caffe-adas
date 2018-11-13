@@ -1,4 +1,4 @@
-~/caffe/build/tools/caffe train \
+~/ADAS_caffe/build/tools/caffe train \
   --model shufflenet_v1_l10_train_val.prototxt \
   --weights ../shufflenet_1x_g3.caffemodel \
   --solver solver_shuffle_v1_l10.prototxt \

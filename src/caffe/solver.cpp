@@ -514,7 +514,11 @@ void Solver<Dtype>::TestDetection(const int test_net_id) {
     }
     const map<int, int>& num_pos = all_num_pos.find(i)->second;
     map<int, float> APs;
+    map<int, float> recalls;
+    map<int, float> precisions;
     float mAP = 0.;
+    float mPrecision = 0.;
+    float mRecall = 0.;
     // Sort true_pos and false_pos with descend scores.
     for (map<int, int>::const_iterator it = num_pos.begin();
          it != num_pos.end(); ++it) {
@@ -536,15 +540,38 @@ void Solver<Dtype>::TestDetection(const int test_net_id) {
       ComputeAP(label_true_pos, label_num_pos, label_false_pos,
                 param_.ap_version(), &prec, &rec, &(APs[label]));
       mAP += APs[label];
+
+      // recall and precision
+      float thr = param_.rec_prec_thr(); // 可在solver中定义的阈值参数
+      int tp_sum = 0; // true positive的总数
+      int fp_sum = 0; // false positive的总数
+      for(int i = 0; i < label_true_pos.size(); ++i) {// 计算tp
+          if(label_true_pos[i].first > thr) {
+              tp_sum += label_true_pos[i].second;
+          }
+      }
+      recalls[label] = static_cast<float>(tp_sum) / label_num_pos;
+      mRecall += recalls[label];
+
+      for(int i = 0; i < label_false_pos.size(); ++i) {// 计算fp
+          if(label_false_pos[i].first > thr) {
+              fp_sum += label_false_pos[i].second;
+          }
+      }
+      precisions[label] = static_cast<float>(tp_sum) / (tp_sum + fp_sum);
+      mPrecision += precisions[label];
+
       if (param_.show_per_class_result()) {
-        LOG(INFO) << "class" << label << ": " << APs[label];
+        LOG(INFO) << "class" << label << "(precision,recall,AP): " << precisions[label] << " " << recalls[label] << " " << APs[label];
       }
     }
     mAP /= num_pos.size();
+    mPrecision /= num_pos.size();
+    mRecall /= num_pos.size();
     const int output_blob_index = test_net->output_blob_indices()[i];
     const string& output_name = test_net->blob_names()[output_blob_index];
-    LOG(INFO) << "    Test net output #" << i << ": " << output_name << " = "
-              << mAP;
+    LOG(INFO) << "    Test net output #" << i << "(precision,recall,mAP): " << output_name << " = "
+              << mPrecision << " " << mRecall << " " << mAP;
   }
 }
 

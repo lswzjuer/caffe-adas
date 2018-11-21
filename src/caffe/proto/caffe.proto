@@ -531,6 +531,7 @@ message LayerParameter {
   optional RecurrentParameter recurrent_param = 146;
   optional ReductionParameter reduction_param = 136;
   optional ReLUParameter relu_param = 123;
+  optional ReLU6Parameter relu6_param = 208;
   optional ReshapeParameter reshape_param = 133;
   optional ScaleParameter scale_param = 142;
   optional SigmoidParameter sigmoid_param = 124;
@@ -893,6 +894,12 @@ message ConvolutionParameter {
   // implementation; for input blobs with num_axes != 2, this option is
   // ignored and the ND implementation will be used.)
   optional bool force_nd_im2col = 17 [default = false];
+  //add new padding method for tensorflow compatible
+  enum TFPaddingMethod {
+    SAME = 0; //like caffe but sometimes use pad [0, 0, 1, 1]
+    VALID = 1;//no padding
+  }
+  optional TFPaddingMethod tf_pad = 19 [default = SAME];
 }
 
 message CropParameter {
@@ -1423,6 +1430,8 @@ message PriorBoxParameter {
 
   // Offset to the top left corner of each cell.
   optional float offset = 13 [default = 0.5];
+
+  optional bool reduce_boxes = 14 [default = false];
 }
 
 message PythonParameter {
@@ -1495,6 +1504,16 @@ message ReLUParameter {
   // improve neural network acoustic models. In ICML Workshop on Deep Learning
   // for Audio, Speech, and Language Processing.
   optional float negative_slope = 1 [default = 0];
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+    CUDNN = 2;
+  }
+  optional Engine engine = 2 [default = DEFAULT];
+}
+
+// Message that stores parameters used by ReLU6Layer
+message ReLU6Parameter {
   enum Engine {
     DEFAULT = 0;
     CAFFE = 1;
@@ -1637,6 +1656,13 @@ message SoftmaxParameter {
   // from the end (e.g., -1 for the last axis).
   // Any other axes will be evaluated as independent softmaxes.
   optional int32 axis = 2 [default = 1];
+
+  // Weighted softmax loss
+  optional float pos_mult = 3 [default = 1];
+  optional int32 pos_cid = 4 [default = 1];
+  
+  // Hard negative mining
+  optional bool hard_negative_mining = 5 [default = false];
 }
 
 message TanHParameter {

@@ -45,6 +45,7 @@ layer {
     lr_mult: 0
     decay_mult: 0
   }
+
   convolution_param {
     num_output: 16
     bias_term: true
@@ -82,8 +83,8 @@ layer {
   batch_norm_param {
     use_global_stats: true
   }
-
 }
+
 layer {
   name: "conv1a/scale"
   type: "Scale"
@@ -382,6 +383,7 @@ layer {
 }
 
 
+
 ### change for lane
 layer {
   name: "res3a_1_branch2a"
@@ -491,6 +493,7 @@ layer {
     dilation: 1
   }
 }
+
 layer {
   name: "res3a_1_branch2b/bn"
   type: "BatchNorm"

@@ -9,6 +9,7 @@ layer {
         backend: LMDB
         batch_size: 16
     }
+    
     transform_param {
         #scale: 0.007843
         #mirror: true

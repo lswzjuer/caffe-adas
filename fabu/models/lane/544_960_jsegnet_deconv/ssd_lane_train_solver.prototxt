@@ -1,0 +1,26 @@
+net: "./ssd_lane_v3.prototxt"
+test_iter: 50
+test_interval: 500
+base_lr: 0.01
+display: 100
+max_iter: 120000
+lr_policy: "multistep"
+gamma: 0.2
+power: 1
+stepvalue: 20000
+stepvalue: 40000
+stepvalue: 60000
+stepvalue: 100000
+weight_decay: 1e-4
+snapshot: 1000
+snapshot_prefix:"./model_v3/train"
+solver_mode: GPU
+debug_info: false
+snapshot_after_train: true
+test_initialization: false
+show_per_class_result: true
+average_loss: 10
+iter_size: 1
+type: "SGD"
+momentum: 0.9
+

@@ -1,28 +1,30 @@
 
 # # Combine two pretrained net into one
-
-import caffe
 import numpy as np
 import sys, os
+sys.path.insert(0,"/usr/local/caffe-ssd/python")
+import caffe
 
-caffe.set_device(4)
 caffe.set_mode_gpu()
 
 def init():
-    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_12500.caffemodel'
-    lanePro = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/deploy_ti_finetune.prototxt'
+    laneModel = '../../ssd_lane_99000/train_iter_120000.caffemodel'
+    lanePro = '../../ssd_lane_99000/ssd_lane_deploy.prototxt'
 
-    odModel = '/home/yaowanchao/ADAS_caffe/fabu/models/od/400_640_JDetNet/ssdJacintoNetV2_iter_92000.caffemodel'
-    odPro = '/home/yaowanchao/ADAS_caffe/fabu/models/od/400_640_JDetNet/deploy.prototxt'
+    odModel = '../../ssd_lane_99000/ssdJacintoNetV2_iter_200000.caffemodel'
+    odPro = '../../ssd_lane_99000/ssd_deploy.prototxt'
 
     global lane_od_model
-    lane_od_model = './lane_od.caffemodel'   # the combinated model that will be generated
-    lane_od_pro = './lane_od_deploy.prototxt' # the combinated net architecture, need to be predefied
+    lane_od_model = '../../ssd_lane_99000/deploy_all_fuse.caffemodel'   # the combinated model that will be generated
+    lane_od_pro = '../../ssd_lane_99000/deploy_all.prototxt' # the combinated net architecture, need to be predefied
 
     global laneNet, odNet, lane_od_net
     laneNet = caffe.Net(lanePro, laneModel, caffe.TEST)
+    print("load lane net successful!!!!")
     odNet = caffe.Net(odPro, odModel, caffe.TEST)
+    print("load od net successful!!!!")
     lane_od_net = caffe.Net(lane_od_pro, caffe.TEST)
+    print("load lane_od net successful!!!!")
 
 
 def printBlobs(inputNet):
@@ -30,18 +32,18 @@ def printBlobs(inputNet):
     Params:
         inputNet: net 
     """
-    print '>>>> print blobs'
-    for layer_name, blob in inputNet.blobs.iteritems():
-        print layer_name + '    ' + str(blob.data.shape)
+    print ('>>>> print blobs')
+    for layer_name, blob in inputNet.blobs.items():
+        print (layer_name + '    ' + str(blob.data.shape))
 
 def printParams(inputNet):
     """Print layer name and params in inputNet
     Params:
         inputNet: net 
     """    
-    print '>>>> print parameters'
-    for layer_name, param in inputNet.params.iteritems():
-        print layer_name + '    ' + str(param[0].data.shape) #, str(param[1].data.shape)
+    print ('>>>> print parameters')
+    for layer_name, param in inputNet.params.items():
+        print (layer_name + '    ' + str(param[0].data.shape) )#, str(param[1].data.shape)
 
 def checkSuffix(layerName, suffix):
     """check whether suffix of layerName is the specific string
@@ -67,7 +69,7 @@ def printData(srcNet, layerName):
     """
     n_params = paramsNum(srcNet, layerName)
     for i in range(0, n_params):
-        print srcNet.params[layerName][i].data[...]
+        print(srcNet.params[layerName][i].data[...])
 
 def getLayers(inputNet):
     """decode all layers of the inputNet
@@ -77,7 +79,7 @@ def getLayers(inputNet):
         inputNet_layers: all layer names in the inputNet
     """
     inputNet_layers = []
-    for key in inputNet.params.iterkeys():
+    for key in inputNet.params.keys():
         if type(inputNet.params[key]) is caffe._caffe.BlobVec:
             #print key
             inputNet_layers.append(key)
@@ -92,11 +94,12 @@ def writeData(inputNet, resFile):
     """
     inputLayers = getLayers(inputNet)
     res_fid = open(resFile, "w")
-    for layerName, params in inputNet.params.iteritems():
+    for layerName, params in inputNet.params.items():
         n_params = paramsNum(inputNet, layerName)
         for i in range(0, n_params):
             value = params[i].data[...]
-            print >> res_fid, layerName, "\nvalue: ", value
+            print("{} \nvalue:{}".format(layerName,value),file=res_fid)
+            # print >> res_fid, layerName, "\nvalue: ", value
 
 def copyData(dstNet, srcNet, layerName):
     """Copy data in specific layer from srcNet to dstNet
@@ -109,7 +112,7 @@ def copyData(dstNet, srcNet, layerName):
     #print "n_params: ", n_params
     for i in range(0, n_params):
         dstNet.params[layerName][i].data[...] = srcNet.params[layerName][i].data[...]
-        #print "layerName: ", layerName, W.shape, b.shape
+        #print ("layerName: ", layerName, W.shape, b.shape)
         
 def checkData(inNet1, inNet2, layerName):
     """check whether the data in the same layer of different Net is equal or not.
@@ -123,9 +126,9 @@ def checkData(inNet1, inNet2, layerName):
     for i in range(0, n_params):
         res = (inNet1.params[layerName][i].data[...] == inNet2.params[layerName][i].data[...])
         if res.all():
-            print "param %d in %s-%s is equal." % (i, inNet1, inNet2)
+            print ("param %d in %s-%s is equal." % (i, inNet1, inNet2))
         else:
-            print "param %d in %s-%s is not equal." % (i, inNet1, inNet2)
+            print ("param %d in %s-%s is not equal." % (i, inNet1, inNet2))
 
 
 def combinateModel(dstNet, srcNet1, srcNet2, savemodel):
@@ -149,18 +152,18 @@ def combinateModel(dstNet, srcNet1, srcNet2, savemodel):
         ## shared layer, copy from odNet
         if(layer in laneNetLayers) and (layer in odNetLayers):
             copyData(dstNet, srcNet2, layer)
-            print "shared layer: ", layer
+            print ("shared layer: ", layer)
 
         ## lane branch, copy from laneNet
         if(layer in laneNetLayers) and (layer not in odNetLayers):
             copyData(dstNet, srcNet1, layer)
-            print "laneNet layer: ", layer
+            print ("laneNet layer: ", layer)
 
         ## od branch, copy from odNet
         if(layer not in laneNetLayers) and (layer in odNetLayers):
             copyData(dstNet, srcNet2, layer)
-            print "odNet layer: ", layer
-    
+            print ("odNet layer: ", layer)
+
     dstNet.save(savemodel)
 
 
@@ -170,9 +173,9 @@ if __name__ == '__main__':
 
     #copyData(lane_od_net, laneNet, 'conv4_1/bn')
    
-    laneModel = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/ti_sim_finetune_iter_12500.caffemodel'
-    lanePro = '/home/yaowanchao/ADAS_caffe/fabu/models/lane/400_640_jsegnet_no_mid_upsample/finetune/deploy_ti_finetune.prototxt'
-    lane_od_pro = './lane_od_deploy.prototxt'
+    laneModel = '../../ssd_lane_99000/train_iter_120000.caffemodel'
+    lanePro = '../../ssd_lane_99000/ssd_lane_deploy.prototxt'
+    lane_od_pro = '../../ssd_lane_99000/deploy_all.prototxt'
     
     lane_od_net = caffe.Net(lane_od_pro, lane_od_model, caffe.TEST)
     

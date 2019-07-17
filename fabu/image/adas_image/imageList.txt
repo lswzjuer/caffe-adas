@@ -1,0 +1,1 @@
+./../data/segmentation/lane/image/adas_image/201711241154_00041057_1511495640062.jpg
